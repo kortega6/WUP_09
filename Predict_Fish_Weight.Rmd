@@ -132,7 +132,7 @@ summary.out$which[3,]
 ```
 
 ```{r}
-best.model <- lm(Weight~Length1+Length2,data=Pike)
+best.model <- lm(Weight~Length1+Length3,data=Pike)
 summary(best.model)
 ```
 
@@ -146,12 +146,55 @@ The best model for Pike would be all the variables.
 
 ### Best Two regressor model
 
-The two best regressor model would be Length1 and Length2
+The two best regressor model would be Length1 and Length3
 
 ## Roach
 
+```{r}
+Roachwtall=lm(Weight~.-Weight,data=Roach)
+summary.lm(Roachwtall)
+```
+```{r}
+library(leaps)
+regsubsets.out <-
+    regsubsets(Weight ~ .,
+               data = Roach,
+               nbest = 2,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.out <- summary(regsubsets.out)
+as.data.frame(summary.out$outmat)
+library(car)
+subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
+```
+  
+##Which is best??  
+
+```{r}
+which.max(summary.out$adjr2)
+```
+```{r}
+summary.out$which[3,]
+```
+
+```{r}
+best.model <- lm(Weight~Length3+Width,data=Roach)
+summary(best.model)
+```
+
+```{r}
+anova(best.model,Roachwtall)
+```
+
 ### Best Models
+
+The best model for the Roach is all the variables.
 
 ### Best Two regressor model
 
+The best two regressor model for Roach would be Length 3 and Width.
+
 ## Final Summary Statements
+
